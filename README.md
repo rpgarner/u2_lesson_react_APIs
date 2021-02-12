@@ -86,9 +86,86 @@ In your `App.js`, let's import axios:
 import axios from 'axios'
 ```
 
-We'll use `axios` to make our api request. In which lifecycle method should we perform our request?
+We'll use `axios` to make our api request.
+
+In which lifecycle method should we perform our request?
 
 <details closed>
   <summary>Hint</summary>
    <code>componentDidMount()</code>
+</details>
+
+Api requests should always be performed in the `componentDidMount()`. If we think back to the lifecycle of components, we know that `componentDidMount` fires once the component loads. Typically with external datasources, we'll want to load them when we reach a certain point in our application. In this case, we're going to set up our app to display a list of new movies on initial load.
+
+In your `App.js` add a `componentDidMount()` to your component.
+
+Next we'll import our global axios variables. Add the following to your `App.js`:
+
+```js
+import { BASE_URL, axiosConfig } from './globals'
+```
+
+Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an es6 feature, but only supported in babel environments.
+
+Let's set up our `componentDidMount` to support `async` operations. Modify your `componentDidMount` to the following:
+
+```js
+async componentDidMount(){}
+```
+
+Finall let's add in our request:
+
+```js
+  async componentDidMount() {
+    const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
+    console.log(res)
+  }
+```
+
+The above code will make a request to the tmdb api's `discover/movies` endpoint. This endpoint will return a list of new/popular movies.
+
+Open your browser dev tools and take a look at the console message.
+
+In which object does the movie data exist?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>res.data.results</code>
+</details>
+
+We'll take the results from our axios request and now store them in state. Add the following to your `componentDidMount`:
+
+```js
+this.setState({ movies: res.data.results })
+```
+
+This will store the results in our `movies` state.
+
+Once the state get's updated, we can utilize that item in state to display our movies!
+
+## Displaying Movies
+
+Let's create a component to display our movies.
+
+Create a `components` folder in the `src` directory.
+
+In the newly created folder, create a `MovieList` component.
+
+Set up your boilerplate for the component:
+
+```js
+export default class MovieList extends Component {
+  render() {
+    return <div className="grid"></div>
+  }
+}
+```
+
+Now we need a way to send some movies to this component.
+
+How can we pass information from one component to another?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>props</code>
 </details>
