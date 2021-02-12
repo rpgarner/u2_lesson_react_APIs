@@ -161,6 +161,12 @@ export default class MovieList extends Component {
 }
 ```
 
+Import the `POSTER_PATH` variable into your `MovieList` component:
+
+```js
+import { POSTER_PATH } from '../globals'
+```
+
 Now we need a way to send some movies to this component.
 
 How can we pass information from one component to another?
@@ -169,3 +175,101 @@ How can we pass information from one component to another?
   <summary>Hint</summary>
    <code>props</code>
 </details>
+
+<br>
+We'll pass our `movies` state to the `MovieList` component via `props`.
+
+Head back to your `App.js` and import your `MovieList` component:
+
+```js
+import MovieList from './components/MovieList'
+```
+
+Finally display your `MovieList` in the `render` method of `App.js`:
+
+```jsx
+render() {
+  return (
+    <div>
+      <MovieList />
+    </div>
+  )
+}
+```
+
+Let's pass our movies state to our `MovieList` component:
+
+```jsx
+<MovieList movies={this.state.movies} />
+```
+
+We're now set up to show off our movies!
+
+Head over to your `MovieList` component.
+
+How can we access the `movies` passed in as props?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>this.props.movies</code>
+</details>
+<br>
+
+Which array method will allow us to display of the movie data?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>.map()</code>
+</details>
+<br>
+
+Let's iterate through each movie to display some information. Add the following to your `MovieList` component:
+
+```js
+{
+  this.props.movies.map((movie) => (
+    <div key={movie.id} className="card">
+      <img src={`${POSTER_PATH}${movie.backdrop_path}`} alt="poster" />
+      <h3>{movie.title}</h3>
+      <button>View Movie</button>
+    </div>
+  ))
+}
+```
+
+Take a look at your browser, you should now have a grid displaying some movies!
+
+![yay](https://media.giphy.com/media/3oz8xRF0v9WMAUVLNK/giphy.gif)
+
+## You Do
+
+Seeing some movies is all fine and good, however seeing details is much more valueable!
+
+[TMDB Api Docs](https://developers.themoviedb.org/3/getting-started/introduction)
+
+- Create a `MovieDetails` component
+- Create some state for a `movieId` and `movieDetails`
+- Utilizing `axios`, make a request to the following endpoint: `/movie/<movieID>`
+- In your `App.js` create a function that accepts a `movieId` as a parameter and sets that `movieId` to the `selectedMovie` state.
+- Pass the above function to your `MovieList` component and have the `button` invoke this function `onClick`. You'll want to pass the movie id to this function. **Hint: Use the callback syntax!**
+- Pass the `selectedMovie` state to the `MovieDetails` component and store it in state as `movieId`. Remember you can access `props` in the constructor!
+- Finally display the details for the selected movie in your `MovieDetails`.
+
+## Bonus
+
+Build functionality to toggle which component is being displayed based on whether the `selectedMovie` state is `null` or populated.
+
+**Hint**: Use `conditional rendering`!
+
+Add some pagination!
+
+## Recap
+
+In this lesson, we covered the basics of integrating React and 3rd party api's. We learned how to keep our code reusable and maintainable by using globals.
+
+## Resources
+
+- [Conditional Rendering](https://reactjs.org/docs/conditional-rendering.html)
+- [Axios](https://github.com/axios/axios)
+- [TMDB Api](https://developers.themoviedb.org/3/getting-started/introduction)
+- [React Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/)
