@@ -62,7 +62,7 @@ The `axiosConfig` variable will be used to provide our access token on each requ
 
 ### Setting Up Our Environment Variables
 
-Environment variables are pieces of information stored in a file that **DOES NOT** get pushed to github. We store sensitive information like credentials or production app information here.
+Environment variables are pieces of information stored in a file that **SHOULD NOT** get pushed to github. We store sensitive information like credentials or production app information here.
 
 To set this up, create a `.env` file in the root directory of this lab. Once created, it should be on the same folder level as your `package.json`.
 
@@ -75,3 +75,20 @@ REACT_APP_TMDB_KEY=<Your secret token>
 **Note: All react environment variables must be prepended with `REACT_APP`**
 
 **Whenever you make a change to your `.env` file, you must restart your react server.**
+
+Finally let's make sure our `.env` file stays a secret. Add `.env` to your `.gitignore`.
+
+## Implementing Our Api Calls
+
+In your `App.js`, let's import axios:
+
+```js
+import axios from 'axios'
+```
+
+We'll use `axios` to make our api request. In which lifecycle method should we perform our request?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>componentDidMount()</code>
+</details>
