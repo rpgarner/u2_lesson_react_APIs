@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# React and Api's
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](https://madooei.github.io/cs421_sp20_homepage/assets/client-server-1.png)
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+In this lesson, we'll be learning how to utilize 3rd party restful api's within our react apps. We'll cover everything from installing necessary dependencies, setting up secret variables/environment variables and setting up files to better manage shared code.
 
-### `yarn start`
+## What We'll Be Building
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![preview](images/preview.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `yarn test`
+- Fork and Clone
+- Cd into this lab and `npm install`
+- `npm start` to verify your setup steps
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Refresher
 
-### `yarn build`
+What is an api? An api is an application programming interface. Api's allow us to interact with 3rd party libraries and data sources in order to build applications. There are various kinds of api's. The api we'll be using today is an example of a `Restful` api. In other words, we request some kind of information from this external data source and it provides us, the `client` with some information as a response.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Credentials For Our Api
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The api we'll be using today is the `TMDB` api. It's an online movie database that gives us information about movies and tv shows.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This is api is a secured api, meaning that we need some kind of authorization token in order to request information from it.
 
-### `yarn eject`
+Head over to this **[LINK](https://www.themoviedb.org/)** and sign up for an account.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Once you've signed up, log in to your account and select your profile on the top right and select settings. Navigate to the `api` section on the left hand side and follow the instructions provided.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Once you've successfully followed these steps, locate the `Api Read Access Token`. We'll be using this token to interact with the api.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Preparing Our App
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Now that we have an access token, we can get started with setting up our app.
 
-## Learn More
+### Installing Axios
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+We'll need axios to perform our api requests. To install axios, run `npm install axios` in this directory.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Setting Global Variables
 
-### Code Splitting
+We'll now set up some global variables for axios. The base url for the api will always be the same. The only thing that will change is the final endpoint for resources.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+In the `src` directory, create a file called `globals.js`.
 
-### Analyzing the Bundle Size
+Add the following code to the file:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```js
+export const axiosConfig = {
+  headers: { Authorization: `Bearer ${process.env.REACT_APP_TMDB_KEY}` }
+}
 
-### Making a Progressive Web App
+export const BASE_URL = 'https://api.themoviedb.org/3'
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+export const POSTER_PATH = 'https://image.tmdb.org/t/p/original'
+```
 
-### Advanced Configuration
+The `axiosConfig` variable will be used to provide our access token on each request via the request headers. Our api's base url will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the url stored in the `POSTER_PATH` variable in order to complete the image urls.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Setting Up Our Environment Variables
 
-### Deployment
+Environment variables are pieces of information stored in a file that **DOES NOT** get pushed to github. We store sensitive information like credentials or production app information here.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+To set this up, create a `.env` file in the root directory of this lab. Once created, it should be on the same folder level as your `package.json`.
 
-### `yarn build` fails to minify
+We'll now add an environment variable in the `.env` file. Add the following:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```sh
+REACT_APP_TMDB_KEY=<Your secret token>
+```
+
+**Note: All react environment variables must be prepended with `REACT_APP`**
+
+**Whenever you make a change to your `.env` file, you must restart your react server.**
