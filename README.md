@@ -1,70 +1,275 @@
-# Getting Started with Create React App
+# React and Api's
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](https://madooei.github.io/cs421_sp20_homepage/assets/client-server-1.png)
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+In this lesson, we'll be learning how to utilize 3rd party restful api's within our react apps. We'll cover everything from installing necessary dependencies, setting up secret variables/environment variables and setting up files to better manage shared code.
 
-### `yarn start`
+## What We'll Be Building
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![preview](images/preview.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `yarn test`
+- Fork and Clone
+- Cd into this lab and `npm install`
+- `npm start` to verify your setup steps
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Refresher
 
-### `yarn build`
+What is an api? An api is an application programming interface. Api's allow us to interact with 3rd party libraries and data sources in order to build applications. There are various kinds of api's. The api we'll be using today is an example of a `Restful` api. In other words, we request some kind of information from this external data source and it provides us, the `client` with some information as a response.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Credentials For Our Api
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The api we'll be using today is the `TMDB` api. It's an online movie database that gives us information about movies and tv shows.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This is api is a secured api, meaning that we need some kind of authorization token in order to request information from it.
 
-### `yarn eject`
+Head over to this **[LINK](https://www.themoviedb.org/)** and sign up for an account.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Once you've signed up, log in to your account and select your profile on the top right and select settings. Navigate to the `api` section on the left hand side and follow the instructions provided.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Once you've successfully followed these steps, locate the `Api Read Access Token`. We'll be using this token to interact with the api.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Preparing Our App
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Now that we have an access token, we can get started with setting up our app.
 
-## Learn More
+### Installing Axios
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+We'll need axios to perform our api requests. To install axios, run `npm install axios` in this directory.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Setting Global Variables
 
-### Code Splitting
+We'll now set up some global variables for axios. The base url for the api will always be the same. The only thing that will change is the final endpoint for resources.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+In the `src` directory, create a file called `globals.js`.
 
-### Analyzing the Bundle Size
+Add the following code to the file:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```js
+export const axiosConfig = {
+  headers: { Authorization: `Bearer ${process.env.REACT_APP_TMDB_KEY}` }
+}
 
-### Making a Progressive Web App
+export const BASE_URL = 'https://api.themoviedb.org/3'
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+export const POSTER_PATH = 'https://image.tmdb.org/t/p/original'
+```
 
-### Advanced Configuration
+The `axiosConfig` variable will be used to provide our access token on each request via the request headers. Our api's base url will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the url stored in the `POSTER_PATH` variable in order to complete the image urls.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Setting Up Our Environment Variables
 
-### Deployment
+Environment variables are pieces of information stored in a file that **SHOULD NOT** get pushed to github. We store sensitive information like credentials or production app information here.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+To set this up, create a `.env` file in the root directory of this lab. Once created, it should be on the same folder level as your `package.json`.
 
-### `yarn build` fails to minify
+We'll now add an environment variable in the `.env` file. Add the following:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```sh
+REACT_APP_TMDB_KEY=<Your secret token>
+```
+
+**Note: All react environment variables must be prepended with `REACT_APP`**
+
+**Whenever you make a change to your `.env` file, you must restart your react server.**
+
+Finally let's make sure our `.env` file stays a secret. Add `.env` to your `.gitignore`.
+
+## Implementing Our Api Calls
+
+In your `App.js`, let's import axios:
+
+```js
+import axios from 'axios'
+```
+
+We'll use `axios` to make our api request.
+
+In which lifecycle method should we perform our request?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>componentDidMount()</code>
+</details>
+
+Api requests should always be performed in the `componentDidMount()`. If we think back to the lifecycle of components, we know that `componentDidMount` fires once the component loads. Typically with external datasources, we'll want to load them when we reach a certain point in our application. In this case, we're going to set up our app to display a list of new movies on initial load.
+
+In your `App.js` add a `componentDidMount()` to your component.
+
+Next we'll import our global axios variables. Add the following to your `App.js`:
+
+```js
+import { BASE_URL, axiosConfig } from './globals'
+```
+
+Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an es6 feature, but only supported in babel environments.
+
+Let's set up our `componentDidMount` to support `async` operations. Modify your `componentDidMount` to the following:
+
+```js
+async componentDidMount(){}
+```
+
+Finall let's add in our request:
+
+```js
+  async componentDidMount() {
+    const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
+    console.log(res)
+  }
+```
+
+The above code will make a request to the tmdb api's `discover/movies` endpoint. This endpoint will return a list of new/popular movies.
+
+Open your browser dev tools and take a look at the console message.
+
+In which object does the movie data exist?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>res.data.results</code>
+</details>
+
+We'll take the results from our axios request and now store them in state. Add the following to your `componentDidMount`:
+
+```js
+this.setState({ movies: res.data.results })
+```
+
+This will store the results in our `movies` state.
+
+Once the state get's updated, we can utilize that item in state to display our movies!
+
+## Displaying Movies
+
+Let's create a component to display our movies.
+
+Create a `components` folder in the `src` directory.
+
+In the newly created folder, create a `MovieList` component.
+
+Set up your boilerplate for the component:
+
+```js
+export default class MovieList extends Component {
+  render() {
+    return <div className="grid"></div>
+  }
+}
+```
+
+Import the `POSTER_PATH` variable into your `MovieList` component:
+
+```js
+import { POSTER_PATH } from '../globals'
+```
+
+Now we need a way to send some movies to this component.
+
+How can we pass information from one component to another?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>props</code>
+</details>
+
+<br>
+We'll pass our `movies` state to the `MovieList` component via `props`.
+
+Head back to your `App.js` and import your `MovieList` component:
+
+```js
+import MovieList from './components/MovieList'
+```
+
+Finally display your `MovieList` in the `render` method of `App.js`:
+
+```jsx
+render() {
+  return (
+    <div>
+      <MovieList />
+    </div>
+  )
+}
+```
+
+Let's pass our movies state to our `MovieList` component:
+
+```jsx
+<MovieList movies={this.state.movies} />
+```
+
+We're now set up to show off our movies!
+
+Head over to your `MovieList` component.
+
+How can we access the `movies` passed in as props?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>this.props.movies</code>
+</details>
+<br>
+
+Which array method will allow us to display of the movie data?
+
+<details closed>
+  <summary>Hint</summary>
+   <code>.map()</code>
+</details>
+<br>
+
+Let's iterate through each movie to display some information. Add the following to your `MovieList` component:
+
+```js
+{
+  this.props.movies.map((movie) => (
+    <div key={movie.id} className="card">
+      <img src={`${POSTER_PATH}${movie.backdrop_path}`} alt="poster" />
+      <h3>{movie.title}</h3>
+      <button>View Movie</button>
+    </div>
+  ))
+}
+```
+
+Take a look at your browser, you should now have a grid displaying some movies!
+
+![yay](https://media.giphy.com/media/3oz8xRF0v9WMAUVLNK/giphy.gif)
+
+## You Do
+
+Seeing some movies is all fine and good, however seeing details is much more valueable!
+
+[TMDB Api Docs](https://developers.themoviedb.org/3/getting-started/introduction)
+
+- Create a `MovieDetails` component
+- Create some state for a `movieId` and `movieDetails`
+- Utilizing `axios`, make a request to the following endpoint: `/movie/<movieID>`
+- In your `App.js` create a function that accepts a `movieId` as a parameter and sets that `movieId` to the `selectedMovie` state.
+- Pass the above function to your `MovieList` component and have the `button` invoke this function `onClick`. You'll want to pass the movie id to this function. **Hint: Use the callback syntax!**
+- Pass the `selectedMovie` state to the `MovieDetails` component and store it in state as `movieId`. Remember you can access `props` in the constructor!
+- Finally display the details for the selected movie in your `MovieDetails`.
+
+## Bonus
+
+Build functionality to toggle which component is being displayed based on whether the `selectedMovie` state is `null` or populated.
+
+**Hint**: Use `conditional rendering`!
+
+Add some pagination!
+
+## Recap
+
+In this lesson, we covered the basics of integrating React and 3rd party api's. We learned how to keep our code reusable and maintainable by using globals.
+
+## Resources
+
+- [Conditional Rendering](https://reactjs.org/docs/conditional-rendering.html)
+- [Axios](https://github.com/axios/axios)
+- [TMDB Api](https://developers.themoviedb.org/3/getting-started/introduction)
+- [React Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/)
