@@ -1,10 +1,10 @@
-# React and Api's
+# React and APIs
 
 ![](https://madooei.github.io/cs421_sp20_homepage/assets/client-server-1.png)
 
 ## Overview
 
-In this lesson, we'll be learning how to utilize 3rd party restful api's within our react apps. We'll cover everything from installing necessary dependencies, setting up secret variables/environment variables and setting up files to better manage shared code.
+In this lesson, we'll be learning how to utilize 3rd party RESTful APIs within our react apps. We'll cover everything from installing necessary dependencies, setting up secret variables/environment variables and setting up files to better manage shared code.
 
 ## What We'll Be Building
 
@@ -18,19 +18,19 @@ In this lesson, we'll be learning how to utilize 3rd party restful api's within 
 
 ## Refresher
 
-What is an api? An api is an application programming interface. Api's allow us to interact with 3rd party libraries and data sources in order to build applications. There are various kinds of api's. The api we'll be using today is an example of a `Restful` api. In other words, we request some kind of information from this external data source and it provides us, the `client` with some information as a response.
+What is an API? An API is an application programming interface. APIs allow us to interact with 3rd party libraries and data sources in order to build applications. There are various kinds of APIs. The API we'll be using today is an example of a **RESTful** API. In other words, we request some kind of information from this external data source and it provides us, the `client` with some information as a response.
 
-## Getting Credentials For Our Api
+## Getting Credentials For Our API
 
-The api we'll be using today is the `TMDB` api. It's an online movie database that gives us information about movies and tv shows.
+The API we'll be using today is the `TMDB` API. It's an online movie database that gives us information about movies and tv shows.
 
-This is api is a secured api, meaning that we need some kind of authorization token in order to request information from it.
+This is API is a secured API, meaning that we need some kind of authorization token in order to request information from it.
 
 Head over to this **[LINK](https://www.themoviedb.org/)** and sign up for an account.
 
-Once you've signed up, log in to your account and select your profile on the top right and select settings. Navigate to the `api` section on the left hand side and follow the instructions provided.
+Once you've signed up, log in to your account and select your profile on the top right and select settings. Navigate to the `API` section on the left hand side and follow the instructions provided.
 
-Once you've successfully followed these steps, locate the `Api Read Access Token`. We'll be using this token to interact with the api.
+Once you've successfully followed these steps, locate the `API Read Access Token`. We'll be using this token to interact with the API.
 
 ## Preparing Our App
 
@@ -38,11 +38,11 @@ Now that we have an access token, we can get started with setting up our app.
 
 ### Installing Axios
 
-We'll need axios to perform our api requests. To install axios, run `npm install axios` in this directory.
+We'll need axios to perform our API requests. To install axios, run `npm install axios` in this directory.
 
 ### Setting Global Variables
 
-We'll now set up some global variables for axios. The base url for the api will always be the same. The only thing that will change is the final endpoint for resources.
+We'll now set up some global variables for axios. The base url for the API will always be the same. The only thing that will change is the final endpoint for resources.
 
 In the `src` directory, create a file called `globals.js`.
 
@@ -58,11 +58,11 @@ export const BASE_URL = 'https://api.themoviedb.org/3'
 export const POSTER_PATH = 'https://image.tmdb.org/t/p/original'
 ```
 
-The `axiosConfig` variable will be used to provide our access token on each request via the request headers. Our api's base url will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the url stored in the `POSTER_PATH` variable in order to complete the image urls.
+The `axiosConfig` variable will be used to provide our access token on each request via the request headers. Our APIs base URL will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the URL stored in the `POSTER_PATH` variable in order to complete the image URLs.
 
 ### Setting Up Our Environment Variables
 
-Environment variables are pieces of information stored in a file that **SHOULD NOT** get pushed to github. We store sensitive information like credentials or production app information here.
+Environment variables are pieces of information stored in a file that **SHOULD NOT** get pushed to GitHub. We store sensitive information like credentials or production app information here.
 
 To set this up, create a `.env` file in the root directory of this lab. Once created, it should be on the same folder level as your `package.json`.
 
@@ -78,7 +78,7 @@ REACT_APP_TMDB_KEY=<Your secret token>
 
 Finally let's make sure our `.env` file stays a secret. Add `.env` to your `.gitignore`.
 
-## Implementing Our Api Calls
+## Implementing Our API Calls
 
 In your `App.js`, let's import axios:
 
@@ -86,7 +86,7 @@ In your `App.js`, let's import axios:
 import axios from 'axios'
 ```
 
-We'll use `axios` to make our api request.
+We'll use `axios` to make our API request.
 
 In which lifecycle method should we perform our request?
 
@@ -95,7 +95,7 @@ In which lifecycle method should we perform our request?
    <code>componentDidMount()</code>
 </details>
 
-Api requests should always be performed in the `componentDidMount()`. If we think back to the lifecycle of components, we know that `componentDidMount` fires once the component loads. Typically with external datasources, we'll want to load them when we reach a certain point in our application. In this case, we're going to set up our app to display a list of new movies on initial load.
+API requests should always be performed in the `componentDidMount()`. If we think back to the lifecycle of components, we know that `componentDidMount` fires once the component loads. Typically with external datasources, we'll want to load them when we reach a certain point in our application. In this case, we're going to set up our app to display a list of new movies on initial load.
 
 In your `App.js` add a `componentDidMount()` to your component.
 
@@ -105,7 +105,7 @@ Next we'll import our global axios variables. Add the following to your `App.js`
 import { BASE_URL, axiosConfig } from './globals'
 ```
 
-Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an es6 feature, but only supported in babel environments.
+Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an ES6 feature, but only supported in babel environments.
 
 Let's set up our `componentDidMount` to support `async` operations. Modify your `componentDidMount` to the following:
 
@@ -113,7 +113,7 @@ Let's set up our `componentDidMount` to support `async` operations. Modify your 
 async componentDidMount(){}
 ```
 
-Finall let's add in our request:
+Finally, let's add in our request:
 
 ```js
   async componentDidMount() {
@@ -122,7 +122,7 @@ Finall let's add in our request:
   }
 ```
 
-The above code will make a request to the tmdb api's `discover/movies` endpoint. This endpoint will return a list of new/popular movies.
+The above code will make a request to the TMDB APIs `discover/movies` endpoint. This endpoint will return a list of new/popular movies.
 
 Open your browser dev tools and take a look at the console message.
 
@@ -243,9 +243,9 @@ Take a look at your browser, you should now have a grid displaying some movies!
 
 ## You Do
 
-Seeing some movies is all fine and good, however seeing details is much more valueable!
+Seeing some movies is all fine and good, however seeing details is much more valuable!
 
-[TMDB Api Docs](https://developers.themoviedb.org/3/getting-started/introduction)
+[TMDB API Docs](https://developers.themoviedb.org/3/getting-started/introduction)
 
 - Create a `MovieDetails` component
 - Create some state for a `movieId` and `movieDetails`
@@ -265,11 +265,11 @@ Add some pagination!
 
 ## Recap
 
-In this lesson, we covered the basics of integrating React and 3rd party api's. We learned how to keep our code reusable and maintainable by using globals.
+In this lesson, we covered the basics of integrating React and 3rd party APIs. We learned how to keep our code reusable and maintainable by using globals.
 
 ## Resources
 
 - [Conditional Rendering](https://reactjs.org/docs/conditional-rendering.html)
 - [Axios](https://github.com/axios/axios)
-- [TMDB Api](https://developers.themoviedb.org/3/getting-started/introduction)
+- [TMDB API](https://developers.themoviedb.org/3/getting-started/introduction)
 - [React Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/)
