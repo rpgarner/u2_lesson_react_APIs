@@ -263,7 +263,7 @@ Seeing some movies is all fine and good, however seeing details is much more val
 - Utilizing `axios`, make a request to the following endpoint: `/movie/<movieID>`
 - In your `App.js` create a function that accepts a `movieId` as a parameter and sets that `movieId` to the `selectedMovie` state.
 - Pass the above function to your `MovieList` component and have the `button` invoke this function `onClick`. You'll want to pass the movie id to this function. **Hint: Use the callback syntax!**
-- Pass the `selectedMovie` state to the `MovieDetails` component and store it in state as `movieId`. Remember you can access `props` in the constructor!
+- Pass the `selectedMovie` state to the `MovieDetails` component and watch it in a `useEffect`. Remember you can watch `props` in the dependency array!
 - Finally display the details for the selected movie in your `MovieDetails`.
 
 ## Bonus
