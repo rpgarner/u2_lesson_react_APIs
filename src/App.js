@@ -1,16 +1,9 @@
 import './styles/App.css'
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
-export default class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      movies: [],
-      selectedMovie: null // Should be movie id once state sets
-    }
-  }
+export default function App() {
+  const [movies, setMovies] = useState([])
+  const [selectedMovie, setSelectedMovie] = useState(null) // this should be a movie once you select one
 
-  render() {
-    return <div></div>
-  }
+  return <div></div>
 }
