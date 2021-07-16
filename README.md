@@ -88,16 +88,16 @@ import axios from 'axios'
 
 We'll use `axios` to make our API request.
 
-In which lifecycle method should we perform our request?
+Which hook should we use to invoke our request?
 
 <details closed>
   <summary>Hint</summary>
-   <code>componentDidMount()</code>
+   <code>useEffect()</code>
 </details>
 
 API requests should always be performed in the `componentDidMount()`. If we think back to the lifecycle of components, we know that `componentDidMount` fires once the component loads. Typically with external datasources, we'll want to load them when we reach a certain point in our application. In this case, we're going to set up our app to display a list of new movies on initial load.
 
-In your `App.js` add a `componentDidMount()` to your component.
+In your `App.js` add and import `useEffect` to your component.
 
 Next we'll import our global axios variables. Add the following to your `App.js`:
 
@@ -107,19 +107,25 @@ import { BASE_URL, axiosConfig } from './globals'
 
 Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an ES6 feature, but only supported in babel environments.
 
-Let's set up our `componentDidMount` to support `async` operations. Modify your `componentDidMount` to the following:
+Let's set up our `useEffect` to support `async` operations. Modify your `useEffect` to the following:
 
 ```js
-async componentDidMount(){}
+useEffect(() => {
+  async function getMovies() {}
+  getMovies()
+}, [])
 ```
 
 Finally, let's add in our request:
 
 ```js
-  async componentDidMount() {
+useEffect(() => {
+  async function getMovies() {
     const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
     console.log(res)
   }
+  getMovies()
+}, [])
 ```
 
 The above code will make a request to the TMDB APIs `discover/movies` endpoint. This endpoint will return a list of new/popular movies.
@@ -133,10 +139,16 @@ In which object does the movie data exist?
    <code>res.data.results</code>
 </details>
 
-We'll take the results from our axios request and now store them in state. Add the following to your `componentDidMount`:
+We'll take the results from our axios request and now store them in state. Add the following to your `useEffect`:
 
 ```js
-this.setState({ movies: res.data.results })
+useEffect(() => {
+  async function getMovies() {
+    const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
+    setMovies(res.data.results)
+  }
+  getMovies()
+}, [])
 ```
 
 This will store the results in our `movies` state.
@@ -154,7 +166,7 @@ In the newly created folder, create a `MovieList` component.
 Set up your boilerplate for the component:
 
 ```js
-export default class MovieList extends Component {
+export default function MovieList(props) {
   render() {
     return <div className="grid"></div>
   }
@@ -185,10 +197,9 @@ Head back to your `App.js` and import your `MovieList` component:
 import MovieList from './components/MovieList'
 ```
 
-Finally display your `MovieList` in the `render` method of `App.js`:
+Finally display your `MovieList` in the `return` statement of `App.js`:
 
 ```jsx
-render() {
   return (
     <div>
       <MovieList />
@@ -200,7 +211,7 @@ render() {
 Let's pass our movies state to our `MovieList` component:
 
 ```jsx
-<MovieList movies={this.state.movies} />
+<MovieList movies={movies} />
 ```
 
 We're now set up to show off our movies!
@@ -211,7 +222,7 @@ How can we access the `movies` passed in as props?
 
 <details closed>
   <summary>Hint</summary>
-   <code>this.props.movies</code>
+   <code>props.movies</code>
 </details>
 <br>
 
@@ -227,7 +238,7 @@ Let's iterate through each movie to display some information. Add the following 
 
 ```js
 {
-  this.props.movies.map((movie) => (
+  props.movies.map((movie) => (
     <div key={movie.id} className="card">
       <img src={`${POSTER_PATH}${movie.backdrop_path}`} alt="poster" />
       <h3>{movie.title}</h3>
@@ -252,7 +263,7 @@ Seeing some movies is all fine and good, however seeing details is much more val
 - Utilizing `axios`, make a request to the following endpoint: `/movie/<movieID>`
 - In your `App.js` create a function that accepts a `movieId` as a parameter and sets that `movieId` to the `selectedMovie` state.
 - Pass the above function to your `MovieList` component and have the `button` invoke this function `onClick`. You'll want to pass the movie id to this function. **Hint: Use the callback syntax!**
-- Pass the `selectedMovie` state to the `MovieDetails` component and store it in state as `movieId`. Remember you can access `props` in the constructor!
+- Pass the `selectedMovie` state to the `MovieDetails` component and watch it in a `useEffect`. Remember you can watch `props` in the dependency array!
 - Finally display the details for the selected movie in your `MovieDetails`.
 
 ## Bonus
