@@ -54,7 +54,7 @@ export const BASE_URL = 'https://api.themoviedb.org/3'
 export const POSTER_PATH = 'https://image.tmdb.org/t/p/original'
 ```
 
-The `axiosConfig` variable will be used to provide our access token on each request via the request headers. Our APIs base URL will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the URL stored in the `POSTER_PATH` variable in order to complete the image URLs.
+Our APIs base URL will never change so we'll store it in the `BASE_URL` variable. And finally, in order to view the provided images, we'll need the URL stored in the `POSTER_PATH` variable in order to complete the image URLs.
 
 ### Setting Up Our Environment Variables
 
