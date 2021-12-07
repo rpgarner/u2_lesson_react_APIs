@@ -49,10 +49,6 @@ In the `src` directory, create a file called `globals.js`.
 Add the following code to the file:
 
 ```js
-export const axiosConfig = {
-  headers: { Authorization: `Bearer ${process.env.REACT_APP_TMDB_KEY}` }
-}
-
 export const BASE_URL = 'https://api.themoviedb.org/3'
 
 export const POSTER_PATH = 'https://image.tmdb.org/t/p/original'
@@ -102,7 +98,7 @@ In your `App.js` add and import `useEffect` to your component.
 Next we'll import our global axios variables. Add the following to your `App.js`:
 
 ```js
-import { BASE_URL, axiosConfig } from './globals'
+import { BASE_URL } from './globals'
 ```
 
 Notice the syntax here. We're using destructuring because when we exported these variables, they get exported as an object via `export const`. This is an ES6 feature, but only supported in babel environments.
@@ -121,7 +117,7 @@ Finally, let's add in our request:
 ```js
 useEffect(() => {
   async function getMovies() {
-    const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
+    const res = await axios.get(`${BASE_URL}/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}`)
     console.log(res)
   }
   getMovies()
@@ -144,7 +140,7 @@ We'll take the results from our axios request and now store them in state. Add t
 ```js
 useEffect(() => {
   async function getMovies() {
-    const res = await axios.get(`${BASE_URL}/discover/movie`, axiosConfig)
+    const res = await axios.get(`${BASE_URL}/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}`)
     setMovies(res.data.results)
   }
   getMovies()
@@ -167,9 +163,9 @@ Set up your boilerplate for the component:
 
 ```js
 export default function MovieList(props) {
-  render() {
-    return <div className="grid"></div>
-  }
+  return (
+    <div className="grid"></div>
+  )
 }
 ```
 
