@@ -12,8 +12,8 @@ In this lesson, we'll be learning how to utilize 3rd party RESTful APIs within o
 
 ## Getting Started
 
-- Fork and Clone
-- Cd into this lab and `npm install`
+- `Fork` and `Clone`
+- `cd` into this lab and `npm install`
 - `npm start` to verify your setup steps
 
 ## Refresher
@@ -162,7 +162,7 @@ In the newly created folder, create a `MovieList` component.
 Set up your boilerplate for the component:
 
 ```js
-export default function MovieList(props) {
+const MovieList = (props) => {
   return (
     <div className="grid"></div>
   )
